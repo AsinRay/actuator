@@ -56,11 +56,16 @@ def check_robot_alive():
     print dtNow, "开始检查 robot..."
     if pid:
         print dtNow, "进程已存在，检测health url是否正常..."
-        response_code = urllib.urlopen(checkURL).getcode()
-        if response_code == 200:
-            print dtNow, "URL可以正常访问，无需重启robot."
-        else:
-            print dtNow, "页面访问出错,开始重启robot."
+        try:
+            response_code = urllib.urlopen(checkURL).getcode()
+            if response_code == 200:
+                print dtNow, "URL可以正常访问，无需重启robot."
+            else:
+                print dtNow, "页面访问出错,开始重启robot."
+                reboot_app()
+        except Exception, e:
+            print "type(e)=%s" % type(e)
+            print(dtNow, "无法访问到health, 准备重启动robot... ")
             reboot_app()
     else:
         pass
@@ -81,6 +86,6 @@ def check_closed_ad_per_15_min():
 
 while True:
     time.sleep(10)
-    # check_robot_alive()
+    check_robot_alive()
 
     check_closed_ad_per_15_min()
