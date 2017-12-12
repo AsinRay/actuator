@@ -10,7 +10,7 @@ dtNow = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
 appName = 'automator'
 pidSh = "ps -ef|grep " + appName +" | grep -v '/grep " + appName +" '/ | awk /'{print $2}/'"
-
+pid = pid = commands.getoutput(pidSh)
 
 # 启动应用的脚本，要求写绝对路径
 startSh = "/home/tomcat/release/automator/start.sh"
@@ -44,7 +44,7 @@ def reboot_process(pid, start_sh):
 
 def check_robot_alive():
 
-    print ("----------------------------")
+    print ("------------- check robot alive ---------------")
     print dtNow, "开始检查 robot..."
     if pid:
         print dtNow, "进程已存在，检测health url是否正常..."
@@ -72,8 +72,8 @@ def check_closed_ad_per_15_min():
 
 
 while True:
-
+    print (pid)
     time.sleep(3)
-    #check_robot_alive()
+    check_robot_alive()
 
     check_closed_ad_per_15_min()
