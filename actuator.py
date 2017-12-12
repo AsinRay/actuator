@@ -23,7 +23,7 @@ acHome = "/home/tomcat/release/automator/"
 startSh = acHome + "start.sh"
 
 
-checkURL = "http://127.0.0.1:8080/health"
+checkURL = "http://127.0.0.1:2222/health"
 otcCountURL = "https://otc.forotc.com/robot/getRobotAdClosedCount"
 
 pid = commands.getoutput("cat " + acHome + appName + ".pid")
