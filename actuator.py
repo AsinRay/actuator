@@ -8,26 +8,38 @@ import socket
 # 定义变量
 dtNow = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
+appName = 'robot'
+pidSh = "ps -ef|grep " + appName +" | grep -v '/grep " + appName +" '/ | awk /'{print $2}/'"
+
+
 # 启动应用的脚本，要求写绝对路径
 startSh = "/apps/usr/robot/bin/startup.sh"
-# pid = commands.getoutput('ps -ef|grep robot |grep -v /"grep robot/"|awk /'{print $2}/'')
+
 
 checkURL = "http://127.0.0.1:8080/"
-otcCountURL = "http://192.168.168.114:8888/robot/getRobotAdClosedCount"
+otcCountURL = "https://otc.forotc.com/robot/getRobotAdClosedCount"
 
-pid = commands.getoutput("cat /Users/mac/robot.pid")
+#pid = commands.getoutput("cat /Users/mac/robot.pid")
 
 # 设置超时时间
 socket.setdefaulttimeout(20)
 
 
-def reboot_process(process_id, start_sh):
-    if process_id:
+def reboot_app():
+    if startSh:
+        pid = commands.getoutput(pidSh)
+        reboot_process(pid, startSh)
+
+
+def reboot_process(pid, start_sh):
+    if pid:
         print dtNow, "kill pid " + pid
         os.system("kill " + pid)
         os.system("kill -9 " + pid)
         time.sleep(3)
         os.system(start_sh)
+    else:
+        print ("dog over")
 
 
 def check_robot_alive():
@@ -41,7 +53,7 @@ def check_robot_alive():
             print dtNow, "URL可以正常访问，无需重启robot."
         else:
             print dtNow, "页面访问出错,开始重启robot."
-            reboot_process(pid, startSh)
+            reboot_app()
     else:
         pass
     print dtNow, "进程不存在，准备启动robot... "
@@ -54,11 +66,14 @@ def check_closed_ad_per_15_min():
     print("All robot close ad count:" + response)
     if int(response) < 15:
         print("12分钟内取得的数据小于15，正在重启robot服务器...")
-        reboot_process(pid, startSh)
+        reboot_app()
     else:
-        print(response + ">=15")
+        print("Status OK... ")
 
 
-# check_robot_alive()
+while True:
 
-check_closed_ad_per_15_min()
+    time.sleep(3)
+    #check_robot_alive()
+
+    check_closed_ad_per_15_min()
