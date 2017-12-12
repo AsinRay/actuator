@@ -5,21 +5,28 @@ import urllib
 import commands
 import time
 import socket
+
+
+
 # 定义变量
 dtNow = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
 appName = 'automator'
-pidSh = "ps -ef|grep " + appName +" | grep -v '/grep " + appName +" '/ | awk /'{print $2}/'"
-pid = pid = commands.getoutput(pidSh)
 
+
+#pidSh = "ps -ef|grep " + appName +" | grep -v '/grep " + appName +" '/ | awk '{print $2}'"
+#pid = pid = commands.getoutput(pidSh)
+
+
+acHome = "/home/tomcat/release/automator/"
 # 启动应用的脚本，要求写绝对路径
-startSh = "/home/tomcat/release/automator/start.sh"
+startSh = acHome + "start.sh"
 
 
 checkURL = "http://127.0.0.1:8080/health"
 otcCountURL = "https://otc.forotc.com/robot/getRobotAdClosedCount"
 
-#pid = commands.getoutput("cat /Users/mac/robot.pid")
+pid = commands.getoutput("cat " + acHome + appName + ".pid")
 
 # 设置超时时间
 socket.setdefaulttimeout(20)
@@ -27,7 +34,8 @@ socket.setdefaulttimeout(20)
 
 def reboot_app():
     if startSh:
-        pid = commands.getoutput(pidSh)
+        pid = commands.getoutput("cat " + acHome + appName + ".pid")
+        print (">>> get pid " + pid)
         reboot_process(pid, startSh)
 
 
@@ -39,7 +47,7 @@ def reboot_process(pid, start_sh):
         time.sleep(3)
         os.system(start_sh)
     else:
-        print ("dog over")
+        print ("error pid is null.")
 
 
 def check_robot_alive():
@@ -56,8 +64,8 @@ def check_robot_alive():
             reboot_app()
     else:
         pass
-    print dtNow, "进程不存在，准备启动robot... "
-    os.system(startSh)
+        print dtNow, "进程不存在，准备启动robot... "
+        os.system(startSh)
 
 
 def check_closed_ad_per_15_min():
@@ -72,8 +80,7 @@ def check_closed_ad_per_15_min():
 
 
 while True:
-    print (pid)
-    time.sleep(3)
-    check_robot_alive()
+    time.sleep(10)
+    # check_robot_alive()
 
     check_closed_ad_per_15_min()
