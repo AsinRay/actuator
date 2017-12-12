@@ -8,15 +8,15 @@ import socket
 # 定义变量
 dtNow = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 
-appName = 'robot'
+appName = 'automator'
 pidSh = "ps -ef|grep " + appName +" | grep -v '/grep " + appName +" '/ | awk /'{print $2}/'"
 
 
 # 启动应用的脚本，要求写绝对路径
-startSh = "/apps/usr/robot/bin/startup.sh"
+startSh = "/home/tomcat/release/automator/start.sh"
 
 
-checkURL = "http://127.0.0.1:8080/"
+checkURL = "http://127.0.0.1:8080/health"
 otcCountURL = "https://otc.forotc.com/robot/getRobotAdClosedCount"
 
 #pid = commands.getoutput("cat /Users/mac/robot.pid")
